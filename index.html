@@ -9,20 +9,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Hyperlink generator</title>
 </head>
 <body>
 <div class="container-fluid">
     <div class="row" id="app">
         <h1 class="text-center">
-            Générer {{ a_type }}
+            Generate {{ a_type }}
         </h1>
 
         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
             <li v-on:click="changementType" class="nav-item" role="presentation">
                 <button class="nav-link active" id="pills-classic-tab" data-bs-toggle="pill"
                         data-bs-target="#pills-classic"
-                        type="button" role="tab" aria-controls="pills-classic" aria-selected="true">Classique
+                        type="button" role="tab" aria-controls="pills-classic" aria-selected="true">Classic
                 </button>
             </li>
             <li v-on:click="changementType" class="nav-item" role="presentation">
@@ -31,13 +31,38 @@
                         type="button" role="tab" aria-controls="pills-mail" aria-selected="false">MailTo
                 </button>
             </li>
+            <li v-on:click="changementType" class="nav-item" role="presentation">
+                <button class="nav-link" id="pills-download-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-download"
+                        type="button" role="tab" aria-controls="pills-download" aria-selected="false">Download
+                </button>
+            </li>
         </ul>
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-classic" role="tabpanel">
                 <form action="#" v-on:keyup="generateByForm" class="row">
-                    <div class="col-12">
+                    <div class="col-6">
                         <input placeholder="Lien" v-model="linkData.link" class="form-control" name="mail_generator_to"
                                type="text">
+                    </div>
+                    <div class="col-6">
+                        <select v-on:change="generateByForm" v-model="linkData.target">
+                            <option>
+
+                            </option>
+                            <option>
+                                _blank
+                            </option>
+                            <option>
+                                _self
+                            </option>
+                            <option>
+                                _parent
+                            </option>
+                            <option>
+                                _top
+                            </option>
+                        </select>
                     </div>
                 </form>
             </div>
@@ -45,12 +70,12 @@
                 <form action="#" v-on:keyup="generateByForm">
                     <div class="row">
                         <div class="col">
-                            <input v-model="mailto.sujet" type="text" class="form-control" placeholder="Sujet">
+                            <input v-model="mailto.sujet" type="text" class="form-control" placeholder="Subject">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <input v-model="mailto.to" type="text" class="form-control" placeholder="Destinataire*">
+                            <input v-model="mailto.to" type="text" class="form-control" placeholder="TO*">
                         </div>
                         <div class="col">
                             <div class="row">
@@ -72,41 +97,34 @@
                     </div>
                 </form>
             </div>
-            <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+            <div class="tab-pane fade" id="pills-download" role="tabpanel" aria-labelledby="pills-download-tab">
+                <form action="#" v-on:keyup="generateByForm" class="row">
+                    <div class="col-6">
+                        <input placeholder="Link" v-model="linkData.link" class="form-control" name="mail_generator_to"
+                               type="text">
+                    </div>
+                    <div class="col-6">
+                        <input placeholder="Filename value" v-model="download.value" class="form-control" name="mail_generator_to"
+                               type="text">
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="row">
             <div class="col-8">
-                <h2 class="text-center">Caractéristiques principales</h2>
+                <h2 class="text-center">Main features</h2>
                 <form v-on:keyup="generateByForm" class="row">
                     <div class="col">
                         <div class="row">
                             <div class="col-12">
-                                <input v-model="linkData.text" type="text" class="form-control" placeholder="Texte">
+                                <input v-model="linkData.text" type="text" class="form-control" placeholder="Text">
                             </div>
                             <div class="col-12">
-                                <input v-model="linkData.class" type="text" class="form-control" placeholder="Classe(s)">
+                                <input v-model="linkData.class" type="text" class="form-control"
+                                       placeholder="Class(es)">
                             </div>
                             <div class="col-12">
                                 <input v-model="linkData.id" type="text" class="form-control" placeholder="Id(s)">
-                            </div>
-                            <div class="col-12">
-                                <select v-model="linkData.target">
-                                    <option>
-
-                                    </option>
-                                    <option>
-                                        _blank
-                                    </option>
-                                    <option>
-                                        _self
-                                    </option>
-                                    <option>
-                                        _parent
-                                    </option>
-                                    <option>
-                                        _top
-                                    </option>
-                                </select>
                             </div>
                         </div>
                     </div>
@@ -114,7 +132,7 @@
 
             </div>
             <div class="col-4">
-                <h2 class="text-center">Résultat</h2>
+                <h2 class="text-center">Result</h2>
                 <div class="row">
                     <div v-html="result" class="col-12">
 
@@ -142,14 +160,14 @@
     const app = {
         data() {
             return {
-                a_type: 'un lien',
-                formType: 'classique',
+                a_type: 'a link',
+                formType: 'classic',
                 linkData: {
                     text: '',
                     link: '',
                     class: '',
-                    id:'',
-                    target:''
+                    id: '',
+                    target: ''
                 },
                 mailto: {
                     to: '',
@@ -158,20 +176,26 @@
                     sujet: '',
                     body: ''
                 },
+                download: {
+                  value:''
+                },
                 result: '',
             }
         }, methods: {
             changementType(event) {
                 switch (event.originalTarget.lastChild.data) {
                     case 'MailTo ':
-                        this.a_type = 'un MailTo'
+                        this.a_type = 'a mailTo'
                         this.formType = 'mailTo'
-
                         break;
-                    case 'Classique ':
+                    case 'Download ':
+                        this.a_type = 'a download link'
+                        this.formType = 'download'
+                        break;
+                    case 'Classic ':
                     default:
-                        this.formType = 'classique'
-                        this.a_type = 'un lien'
+                        this.formType = 'classic'
+                        this.a_type = 'a link'
                         break;
                 }
             },
@@ -180,16 +204,21 @@
 
                 let result = '<a ';
 
-                this.linkData.class !== '' ? result+='class="'+ this.linkData.class +'" ' : ''
-                this.linkData.id !== '' ? result+='id="'+ this.linkData.id +'" ' : ''
-                this.linkData.target !== '' ? result+='target="'+ this.linkData.target +'" ' : ''
-
+                this.linkData.class !== '' ? result += 'class="' + this.linkData.class + '" ' : ''
+                this.linkData.id !== '' ? result += 'id="' + this.linkData.id + '" ' : ''
+                this.linkData.target !== '' ? result += 'target="' + this.linkData.target + '" ' : ''
 
 
                 switch (this.formType) {
-                    case "classique":
+                    case "classic":
 
-                        this.linkData.link !== '' ? result+='href="'+ this.linkData.link +'" ' : ''
+                        this.linkData.link !== '' ? result += 'href="' + this.linkData.link + '" ' : ''
+                        break;
+                    case 'download':
+                        this.linkData.link !== '' ? result += 'href="' + this.linkData.link + '" ' : ''
+                        result += 'download'
+                        this.download.value !== '' ? result += '="' + this.download.value + '" ' : ''
+
                         break;
 
                     case "mailTo":
